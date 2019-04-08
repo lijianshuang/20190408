@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>京东shopping-cart</title>
+    <style>
+      * {
+        padding: 0;
+        margin: 0;
+      }
+      .clearfix:before,
+      .clearfix:after {
+        content: '';
+        display: block;
+        clear: both;
+        visibility: hidden;
+        line-height: 0;
+        height: 0;
+        font-size: 0;
+      }
+
+      .clearfix {
+        *zoom: 1;
+      }
+      li {
+        list-style: none;
+      }
+      a {
+        text-decoration: none;
+      }
+
+      body {
+        background-color: #ccc;
+      }
+      .cart {
+        background-color: #fff;
+        width: 990px;
+        margin: 60px auto;
+        padding: 40px;
+        font-family: 微软雅黑;
+      }
+      .cart-head {
+        padding: 5px 10px;
+        line-height: 32px;
+        border: 1px solid #ccc;
+        background-color: #eee;
+        margin-bottom: 20px;
+      }
+      .cart-head > input {
+        /* display: block; */
+        float: left;
+        margin: 8px 15px 0 0;
+      }
+      .cart-head > span {
+        display: block;
+        float: left;
+      }
+      .cart-head > span:nth-child(3) {
+        margin-left: 70px;
+        width: 430px;
+      }
+      .cart-head > span:nth-child(4),
+      .cart-head > span:nth-child(6) {
+        width: 100px;
+        text-align: center;
+      }
+      .cart-head > span:nth-child(5) {
+        width: 140px;
+        text-align: center;
+      }
+      .cart-head > span:last-child {
+        float: right;
+        margin-right: 15px;
+      }
+      ul.cart-list {
+        padding: 0;
+        margin-bottom: 30px;
+        position: relative;
+      }
+      .cart-list li {
+        /* line-height: 100px; */
+        padding-left: 8px;
+        margin-bottom: 10px;
+        padding: 10px;
+        border: 1px solid #ddd;
+      }
+      .cart-list li .jdcheckbox {
+        float: left;
+        margin-right: 10px;
+      }
+      .cart-list li img {
+        float: left;
+        margin-right: 15px;
+      }
+      .cart-list li p {
+        width: 400px;
+        font-size: 14px;
+        float: left;
+        margin-right: 70px;
+      }
+      .cart-list li .danjia {
+        width: 50px;
+        float: left;
+        text-align: center;
+      }
+      .cart-list li .shuliang {
+        float: left;
+        margin: 0 70px;
+      }
+      .cart-list li .shuliang input {
+        width: 20px;
+        text-align: center;
+        margin: 0 5px;
+      }
+      /* .cart-list li span.heji {
+        width: 60px;
+        text-align: center;
+      } */
+      .cart-list li > button {
+        float: right;
+        margin-right: 15px;
+      }
+      .windowpop {
+        width: 400px;
+        height: 180px;
+        position: absolute;
+        float: none;
+        top: 100px;
+        left: 50%;
+        margin-left: -200px;
+        background-color: #fff;
+        border: chocolate 2px solid;
+        text-align: center;
+        line-height: 180px;
+        display: none;
+      }
+      .windowpop .del {
+        margin-right: 50px;
+      }
+      .cart-footer {
+        padding: 15px 0 20px;
+        margin: 20px 0 40px 0;
+        border: 1px solid #ccc;
+        background-color: #f7f7f7fc;
+      }
+      .cart-footer p {
+        float: right;
+        margin-right: 50px;
+        font-size: 20px;
+        color: #999;
+      }
+      .cart-footer span {
+        margin-left: 15px;
+        font-size: 32px;
+        font-weight: 600;
+        color: #e2231a;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="cart">
+      <div class="cart-head clearfix">
+        <input type="checkbox" name="" id="allcheckbox" class="jdcheckbox" />
+        <span>全选</span>
+        <span>商品</span>
+        <span>单价</span>
+        <span>数量</span>
+        <span>小计</span>
+        <span>操作</span>
+      </div>
+      <ul class="cart-list">
+        <!-- <li>
+          <input type="text" class="jdcheckbox" />
+          <img src="" alt="" />
+          <p class="info"></p>
+          <span class="danjia"></span>
+          <div class="shuliang">
+            <span class="jian">-</span>
+            <input type="text" class="num" />
+            <span class="jia">+</span>
+          </div>
+          <span class="heji"></span>
+          <button class="btn"></button>
+        </li> -->
+      </ul>
+      <div class="cart-footer clearfix">
+        <p>总 价 :<span></span></p>
+      </div>
+    </div>
+    <script src="./js/jquery-3.2.1.min.js"></script>
+    <script>
+      var arr = [
+        {
+          name: 'ZBOM志邦',
+          imgSrc:
+            'https://img10.360buyimg.com/cms/s80x80_jfs/t1/14641/26/11420/201734/5c8f85dbE6d02a26f/d58de6b688524946.jpg',
+          info:
+            'ZBOM志邦厨柜 北美风情 整体橱柜定制厨房 古典膜压整体厨柜 详情请咨询',
+          danjia: '12999.00'
+        },
+        {
+          name: '佰草集',
+          imgSrc:
+            'https://img10.360buyimg.com/cms/s80x80_jfs/t1/9017/1/8024/43666/5c09f1dfE09824470/2487cb3153194273.jpg',
+          info: '佰草集新玉润保湿精华液30ml（锁水精华）',
+          danjia: '299.00'
+        },
+        {
+          name: '天堂伞',
+          imgSrc:
+            'https://img10.360buyimg.com/cms/s80x80_jfs/t1/12164/18/3145/282058/5c231cdbEf7162d1f/3c80c39d1cfc0f63.jpg',
+          info:
+            '天堂伞 遮阳黑胶防晒伞小巧便携防紫外线小黑伞三折晴雨伞 淡紫色692ELCJ',
+          danjia: '99.00'
+        },
+        {
+          name: '帮宝适',
+          imgSrc:
+            'https://img10.360buyimg.com/cms/s80x80_jfs/t1/650/10/3607/167286/5b98e4e3E315833a8/a1ff5ff0a87918aa.jpg',
+          info: '帮宝适(Pampers)超薄干爽绿帮纸尿裤L164片(9-14kg)大码 尿不',
+          danjia: '9.00'
+        }
+      ]
+      // 数组赋值，展示到页面
+      function chuangjian(arr) {
+        for (i = 0; i < arr.length; i++) {
+          var li = $('<li class="show clearfix">')
+          // 所有的li里的结构  用 li.html()
+          li.html(
+            '<input type="checkbox" class="jdcheckbox"/><img src ="' +
+              arr[i].imgSrc +
+              '" /><p class="info">' +
+              arr[i].info +
+              '</p><span class="danjia">' +
+              arr[i].danjia +
+              '</span><div class="shuliang"><span class="jian">-</span><input type="text" value="1" class = "num"/><span class="jia">+</span></div><span class="heji">' +
+              arr[i].danjia +
+              '</span><button class="btn">删除</button><div class="windowpop"><button class="del">确认删除</button><button class="cancel">cancel</button></div> '
+          )
+          li.appendTo('ul')
+        }
+      }
+
+      //封装关于总价运算的函数
+      function showFull() {
+        //定义 总价   初始值赋予零
+        var zongjia = 0
+        $('.cart-list .jdcheckbox').each(function() {
+          var isTrue = $(this).prop('checked')
+          if (isTrue) {
+            var price =
+              $(this)
+                .next()
+                .next()
+                .next()
+                .next()
+                .next()
+                .text() * 1
+            zongjia = zongjia * 1 + price
+          }
+        })
+
+        $('.cart-footer span').text(zongjia.toFixed(2))
+      }
+
+      chuangjian(arr)
+      showFull()
+
+      var sum = ''
+      var num = ''
+      //加号的click事件
+      $('.jia').click(function() {
+        num = $(this)
+          .prev()
+          .val()
+        num++
+        $(this)
+          .prev()
+          .val(num)
+        sum =
+          $(this)
+            .parent()
+            .prev()
+            .text() * num
+
+        $(this)
+          .parent()
+          .next()
+          .text(sum.toFixed(2))
+        $(this)
+          .parent()
+          .parent()
+          .children()
+          .eq(0)
+          .prop('checked', true)
+        $(this)
+          .parent()
+          .parent()
+          .css('background-color', 'pink')
+        showFull()
+      })
+      //减号的click事件，条件是 input值>1
+      $('.jian').click(function() {
+        num = num = $(this)
+          .next()
+          .val()
+        if (num > 1) {
+          num--
+          $(this)
+            .next()
+            .val(num)
+          sum =
+            $(this)
+              .parent()
+              .prev()
+              .text() * num
+          $(this)
+            .parent()
+            .next()
+            .text(sum.toFixed(2))
+          $(this)
+            .parent()
+            .parent()
+            .children()
+            .eq(0)
+            .prop('checked', true)
+          $(this)
+            .parent()
+            .parent()
+            .css('background-color', 'pink')
+          showFull()
+        }
+      })
+      //  加号 减号 事件 改变后，对应的 合计 发生的相应变化
+      $('.num').blur(function(e) {
+        e.preventDefault()
+        var num1 = $(this).val()
+        if (num1 > 1) {
+          var danjia = $(this)
+            .parent()
+            .prev()
+            .text()
+          sum = num1 * danjia
+          $(this)
+            .parent()
+            .next()
+            .text(sum.toFixed(2))
+          $(this)
+            .parent()
+            .parent()
+            .children()
+            .eq(0)
+            .prop('checked', true)
+          $(this)
+            .parent()
+            .parent()
+            .css('background-color', 'pink')
+        }
+        showFull()
+      })
+
+      // 全选 复选框 的change事件，点击全选按钮时，li里的checkbox的'checked'属性 与全选按钮相同
+      $('#allcheckbox').change(function() {
+        var check = $(this).prop('checked')
+        $(' .jdcheckbox').prop('checked', check)
+
+        showFull()
+
+        //li里的checkbox的'checked'属性 发生变化时，相应的背景发生变化
+        if (check) {
+          $('li').css('background-color', 'pink')
+        } else {
+          $('li').css('background-color', 'white')
+        }
+      })
+      //li里的checkbox的change事件
+      $('.cart-list .jdcheckbox').change(function() {
+        //定义被点击的按钮的 'checked'属性
+        var check = $(this).prop('checked')
+        showFull(arr)
+        if (check) {
+          $(this)
+            .parent()
+            .css('background-color', 'pink')
+          // 定义一个变量，初始值为空。用作检验其他li 'checked'属性，
+          var allChecked = true
+          // each 事件 遍历所有的li里的checkbox复选框
+          $('.cart-list .jdcheckbox').each(function(index, element) {
+            var tchecked = $(this).prop('checked')
+            //ruguo li 出现 'checked'= false时，allChecked = false，那么 全选按钮的 'checked'属性，也为false。
+            if (!tchecked) {
+              allChecked = false
+            }
+          })
+          // 如果 each事件结束后 al lChecked 值依然为true，那么suoyou的li里的chec的'checked'属性 为true，   那么 全选按钮的 'checked'属性，也为true。
+          if (allChecked) {
+            $('#allcheckbox').prop('checked', true)
+          }
+        } else {
+          $(this)
+            .parent()
+            .css('background-color', 'white')
+          $('#allcheckbox').prop('checked', false)
+        }
+      })
+
+      $('.btn').click(function() {
+        $(this)
+          .next()
+          .css('display', 'block')
+        $('.del').click(function() {
+          $(this)
+            .parent()
+            .parent()
+            .remove()
+          showFull(arr)
+        })
+        $('.cancel').click(function() {
+          $(this)
+            .parent()
+            .css('display', 'none')
+        })
+      })
+    </script>
+  </body>
+</html>
